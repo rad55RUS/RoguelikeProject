@@ -34,6 +34,7 @@ public class CreatureBehavior : EntityBehavior
 
     /// Animation component
     private Animator animator;
+    private GameObject gameObject;
     ///
 
     /// <summary>
@@ -101,14 +102,15 @@ public class CreatureBehavior : EntityBehavior
         //
 
         SetDirection();
+        
+
         GetComponent<Rigidbody2D>().velocity = new Vector2(currentSpeedX, currentSpeedY);
-        
-        
     }
     
     // Private methods
     private void SetDirection()
     {
+        int oldDirection = direction;
         if (moveX > 0)
         {
             if (moveY > 0)
@@ -148,6 +150,73 @@ public class CreatureBehavior : EntityBehavior
             else if (moveY < 0)
             {
                 direction = 0;
+            }
+        }
+        if (oldDirection != direction)
+        {
+            string directionName;
+            bool facedRight = true;
+            Vector3 localScale = transform.localScale;
+
+            switch (direction)
+            {
+                case 0:
+                    directionName = "South";
+                    break;
+                case 1:
+                    directionName = "South";
+                    break;
+                case 2:
+                    directionName = "Side";
+                    facedRight = true;
+                    break;
+                case 3:
+                    directionName = "North";
+                    break;
+                case 4:
+                    directionName = "North";
+                    break;
+                case 5:
+                    directionName = "North";
+                    break;
+                case 6:
+                    directionName = "Side";
+                    facedRight = false;
+                    break;
+                case 7:
+                    directionName = "South";
+                    break;
+                default:
+                    directionName = "South";
+                    break;
+            }
+
+            if (facedRight)
+            {
+                if (localScale.x < 0)
+                {
+                    localScale.x *= -1;
+                }
+            }
+            else
+            {
+                if (localScale.x > 0)
+                {
+                    localScale.x *= -1;
+                }
+            }
+            transform.localScale = localScale;
+
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.name == directionName)
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
             }
         }
     }
