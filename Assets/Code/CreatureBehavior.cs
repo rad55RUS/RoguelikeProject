@@ -19,7 +19,7 @@ public class CreatureBehavior : EntityBehavior
     /// Booleans
     protected bool isRunning = false;
     protected bool isJumping = false;
-    protected bool isDodging = false;
+    protected bool isDashing = false;
     protected bool isBlocking = false;
     protected bool isAttacking = false;
     protected bool isAiming = false;
@@ -27,7 +27,8 @@ public class CreatureBehavior : EntityBehavior
     /// Floats
     protected float moveX = 0;  // -1 is Left; +1 is Right 
     protected float moveY = 0;  // -1 is Down; +1 is Up 
-    protected float currentSpeed = 0;
+    protected float currentSpeedX = 0;
+    protected float currentSpeedY = 0;
     ///
     //
 
@@ -61,28 +62,50 @@ public class CreatureBehavior : EntityBehavior
         // Setting current speed
         if (moveX != 0)
         {
-            currentSpeed = moveX;
+            currentSpeedX = moveX;
         }
-        else if (moveY != 0)
+        else
         {
-            currentSpeed = moveY;
+            currentSpeedX = 0;
+        }
+        if (moveY != 0)
+        {
+            currentSpeedY = moveY;
+        } 
+        else
+        {
+            currentSpeedY = 0;
         }
 
         if (isRunning)
         {
-            currentSpeed *= runningSpeed * speedMultiplier;
+            currentSpeedX *= runningSpeed * speedMultiplier;
+            currentSpeedY *= runningSpeed * speedMultiplier;
         }
         else
         {
-            currentSpeed *= walkingSpeed * speedMultiplier;
+            currentSpeedX *= walkingSpeed * speedMultiplier;
+            currentSpeedY *= walkingSpeed * speedMultiplier;
         }
+
+        /// For animator
+        if (currentSpeedX > 0)
+        {
+            animator.SetFloat("Speed", Mathf.Abs(currentSpeedX));
+        }
+        else if (currentSpeedY > 0)
+        {
+            animator.SetFloat("Speed", Mathf.Abs(currentSpeedY));
+        }
+        ///
         //
 
         SetDirection();
-        GetComponent<Rigidbody2D>().velocity = new Vector2(currentSpeed, GetComponent<Rigidbody2D>().velocity.y);
-        animator.SetFloat("Speed", Mathf.Abs(currentSpeed));
+        GetComponent<Rigidbody2D>().velocity = new Vector2(currentSpeedX, currentSpeedY);
+        
+        
     }
-
+    
     // Private methods
     private void SetDirection()
     {
