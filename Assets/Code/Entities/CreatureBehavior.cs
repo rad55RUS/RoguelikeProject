@@ -90,13 +90,17 @@ public class CreatureBehavior : EntityBehavior
         }
 
         /// For animator
-        if (currentSpeedX > 0)
+        if (currentSpeedX != 0)
         {
             animator.SetFloat("Speed", Mathf.Abs(currentSpeedX));
         }
-        else if (currentSpeedY > 0)
+        else if (currentSpeedY != 0)
         {
             animator.SetFloat("Speed", Mathf.Abs(currentSpeedY));
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0f);
         }
         ///
         //
